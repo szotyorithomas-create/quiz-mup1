@@ -1,0 +1,1051 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Quiz MUP1 — 149 Médicaments</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg: #f2f2f7;
+  --surface: #ffffff;
+  --text: #1c1c1e;
+  --text-2: #3c3c43;
+  --text-3: #8e8e93;
+  --accent: #007aff;
+  --accent-dark: #0062cc;
+  --green: #34c759;
+  --green-bg: rgba(52,199,89,0.1);
+  --red: #ff3b30;
+  --red-bg: rgba(255,59,48,0.1);
+  --orange: #ff9f0a;
+  --purple: #af52de;
+  --border: rgba(60,60,67,0.12);
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.05), 0 2px 12px rgba(0,0,0,0.05);
+  --shadow: 0 2px 8px rgba(0,0,0,0.06), 0 8px 28px rgba(0,0,0,0.07);
+  --r: 18px;
+  --r-sm: 13px;
+  --r-xs: 10px;
+}
+
+html, body { height: 100%; }
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Helvetica Neue', Arial, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+}
+
+/* ─── SCREENS ─── */
+.screen { display: none; }
+.screen.active {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  animation: screenIn 0.5s cubic-bezier(0.22,1,0.36,1) both;
+}
+
+@keyframes screenIn {
+  from { opacity: 0; transform: translateY(28px) scale(0.98); }
+  to   { opacity: 1; transform: translateY(0)   scale(1);    }
+}
+
+/* ─── HOME ─── */
+#home.active {
+  align-items: center;
+  justify-content: center;
+  padding: max(env(safe-area-inset-top,0px),40px) 24px max(env(safe-area-inset-bottom,0px),48px);
+}
+
+.home-inner {
+  width: 100%;
+  max-width: 480px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.home-icon {
+  font-size: 76px;
+  line-height: 1;
+  margin-bottom: 18px;
+  filter: drop-shadow(0 8px 20px rgba(0,122,255,0.22));
+  animation: iconIn 0.7s cubic-bezier(0.34,1.56,0.64,1) 0.15s both;
+}
+@keyframes iconIn {
+  from { opacity: 0; transform: scale(0.4) translateY(16px); }
+  to   { opacity: 1; transform: scale(1)   translateY(0);    }
+}
+
+.home-title {
+  font-size: clamp(2rem,6vw,2.8rem);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  color: var(--text);
+  text-align: center;
+  animation: itemIn 0.5s cubic-bezier(0.22,1,0.36,1) 0.25s both;
+}
+
+.home-sub {
+  font-size: 1.05rem;
+  color: var(--text-3);
+  margin-top: 5px;
+  margin-bottom: 28px;
+  text-align: center;
+  animation: itemIn 0.5s cubic-bezier(0.22,1,0.36,1) 0.3s both;
+}
+
+@keyframes itemIn {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0);    }
+}
+
+.rules-card {
+  width: 100%;
+  background: var(--surface);
+  border-radius: var(--r);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+  margin-bottom: 20px;
+  animation: itemIn 0.5s cubic-bezier(0.22,1,0.36,1) 0.35s both;
+}
+
+.rule-row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 18px;
+  border-bottom: 1px solid var(--border);
+  font-size: 0.88rem;
+  color: var(--text-2);
+  line-height: 1.45;
+}
+.rule-row:last-child { border-bottom: none; }
+.rule-ic { font-size: 1.15rem; flex-shrink: 0; }
+
+.type-wrap {
+  width: 100%;
+  margin-bottom: 20px;
+  animation: itemIn 0.5s cubic-bezier(0.22,1,0.36,1) 0.4s both;
+}
+
+.type-label {
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
+  color: var(--text-3);
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+.type-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.btn-type {
+  padding: 12px 10px;
+  border: 1.5px solid var(--border);
+  border-radius: var(--r-sm);
+  background: var(--surface);
+  color: var(--text-2);
+  font-family: inherit;
+  font-size: 0.83rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.22,1,0.36,1);
+  box-shadow: var(--shadow-sm);
+}
+.btn-type:active { transform: scale(0.97); }
+.btn-type.selected {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+  box-shadow: 0 4px 14px rgba(0,122,255,0.35);
+}
+
+.btn-start {
+  width: 100%;
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  padding: 17px;
+  border-radius: var(--r-sm);
+  font-family: inherit;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  letter-spacing: -0.01em;
+  box-shadow: 0 4px 20px rgba(0,122,255,0.38);
+  transition: all 0.2s cubic-bezier(0.22,1,0.36,1);
+  animation: itemIn 0.5s cubic-bezier(0.22,1,0.36,1) 0.45s both;
+}
+.btn-start:hover { background: var(--accent-dark); transform: translateY(-2px); box-shadow: 0 8px 28px rgba(0,122,255,0.42); }
+.btn-start:active { transform: scale(0.99) translateY(0); }
+
+.cats-line {
+  margin-top: 20px;
+  color: var(--text-3);
+  font-size: 0.7rem;
+  text-align: center;
+  line-height: 1.85;
+  animation: itemIn 0.5s cubic-bezier(0.22,1,0.36,1) 0.5s both;
+}
+
+/* ─── QUIZ SCREEN ─── */
+#quiz.active { display: flex; flex-direction: column; }
+
+.quiz-header {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: rgba(242,242,247,0.88);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border-bottom: 1px solid var(--border);
+  padding: 12px 20px 10px;
+}
+
+.quiz-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.quiz-logo {
+  font-size: 0.9rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--text);
+}
+
+.btn-quit {
+  background: rgba(60,60,67,0.08);
+  border: none;
+  color: var(--text-3);
+  padding: 6px 14px;
+  border-radius: 100px;
+  font-family: inherit;
+  font-size: 0.78rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.btn-quit:hover { background: var(--red-bg); color: var(--red); }
+
+.prog-track {
+  height: 4px;
+  background: rgba(60,60,67,0.1);
+  border-radius: 100px;
+  overflow: hidden;
+  margin-bottom: 10px;
+}
+.prog-fill {
+  height: 100%;
+  border-radius: 100px;
+  background: linear-gradient(90deg, var(--accent), #5ac8fa);
+  transition: width 0.6s cubic-bezier(0.22,1,0.36,1);
+  min-width: 0;
+}
+
+.stats-row {
+  display: flex;
+  gap: 6px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.stats-row::-webkit-scrollbar { display: none; }
+
+.chip {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  padding: 5px 12px;
+  border-radius: 100px;
+  font-size: 0.76rem;
+  font-weight: 600;
+  color: var(--text-2);
+  white-space: nowrap;
+  flex-shrink: 0;
+  box-shadow: var(--shadow-sm);
+}
+
+/* ─── QUIZ BODY ─── */
+.quiz-body {
+  flex: 1;
+  padding: 20px 20px 48px;
+  max-width: 640px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+.badge-row {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 14px;
+  flex-wrap: wrap;
+}
+.badge {
+  padding: 4px 12px;
+  border-radius: 100px;
+  font-size: 0.71rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+}
+.b-qtype  { background: rgba(0,122,255,0.1);     color: var(--accent);  }
+.b-retry  { background: rgba(255,159,10,0.12);   color: var(--orange);  }
+.b-cat    { background: rgba(175,82,222,0.1);    color: var(--purple);  }
+
+.q-card {
+  background: var(--surface);
+  border-radius: var(--r);
+  padding: 22px 22px;
+  margin-bottom: 14px;
+  box-shadow: var(--shadow);
+  font-size: 0.97rem;
+  line-height: 1.7;
+  color: var(--text);
+}
+
+.opts { display: flex; flex-direction: column; gap: 9px; }
+
+.opt-btn {
+  background: var(--surface);
+  border: 1.5px solid var(--border);
+  border-radius: var(--r-sm);
+  padding: 15px 16px;
+  text-align: left;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 0.87rem;
+  color: var(--text);
+  line-height: 1.5;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  word-break: break-word;
+  box-shadow: var(--shadow-sm);
+  transition: border-color 0.18s, background 0.18s, transform 0.18s cubic-bezier(0.22,1,0.36,1), box-shadow 0.18s;
+  opacity: 0;
+  animation: optIn 0.4s cubic-bezier(0.22,1,0.36,1) both;
+}
+.opt-btn:nth-child(1) { animation-delay: 0.06s; }
+.opt-btn:nth-child(2) { animation-delay: 0.12s; }
+.opt-btn:nth-child(3) { animation-delay: 0.18s; }
+.opt-btn:nth-child(4) { animation-delay: 0.24s; }
+
+@keyframes optIn {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0);    }
+}
+
+.opt-btn:hover:not(:disabled) {
+  border-color: var(--accent);
+  background: rgba(0,122,255,0.03);
+  transform: translateX(4px);
+  box-shadow: var(--shadow);
+}
+.opt-btn:active:not(:disabled) { transform: scale(0.99); }
+.opt-btn:disabled { cursor: default; }
+
+.opt-letter {
+  font-weight: 700;
+  color: var(--accent);
+  min-width: 22px;
+  flex-shrink: 0;
+  padding-top: 1px;
+}
+.opt-text { flex: 1; }
+
+.opt-btn.correct {
+  border-color: var(--green) !important;
+  background: var(--green-bg) !important;
+  animation: bounceIn 0.45s cubic-bezier(0.34,1.56,0.64,1) !important;
+}
+.opt-btn.correct .opt-letter { color: var(--green); }
+
+.opt-btn.wrong {
+  border-color: var(--red) !important;
+  background: var(--red-bg) !important;
+  animation: shakeX 0.45s ease !important;
+}
+.opt-btn.wrong .opt-letter { color: var(--red); }
+
+.opt-btn.reveal {
+  border-color: var(--green) !important;
+  background: var(--green-bg) !important;
+}
+.opt-btn.reveal .opt-letter { color: var(--green); }
+
+@keyframes bounceIn {
+  0%   { transform: scale(1);    }
+  40%  { transform: scale(1.02); }
+  70%  { transform: scale(0.99); }
+  100% { transform: scale(1);    }
+}
+@keyframes shakeX {
+  0%,100% { transform: translateX(0);  }
+  18%      { transform: translateX(-7px); }
+  36%      { transform: translateX(7px);  }
+  54%      { transform: translateX(-5px); }
+  72%      { transform: translateX(5px);  }
+  90%      { transform: translateX(-2px); }
+}
+
+/* ─── FEEDBACK ─── */
+.fb-area { margin-top: 14px; }
+
+.fb-banner {
+  text-align: center;
+  padding: 13px 16px;
+  border-radius: var(--r-sm);
+  font-weight: 600;
+  font-size: 0.92rem;
+  margin-bottom: 11px;
+  animation: itemIn 0.3s cubic-bezier(0.22,1,0.36,1) both;
+}
+.fb-ok  { background: var(--green-bg); color: #1a7a33; }
+.fb-err { background: var(--red-bg);   color: #c0392b; }
+
+.fiche {
+  background: var(--surface);
+  border: 1.5px solid rgba(0,122,255,0.15);
+  border-radius: var(--r-sm);
+  padding: 16px 18px;
+  margin-bottom: 11px;
+  animation: itemIn 0.35s cubic-bezier(0.22,1,0.36,1) 0.05s both;
+}
+.fiche-nom  { font-size: 0.9rem; font-weight: 700; color: var(--text); margin-bottom: 10px; }
+.fiche-row  { font-size: 0.82rem; line-height: 1.65; margin-bottom: 8px; color: var(--text-2); }
+.fiche-row:last-child { margin-bottom: 0; }
+.fiche-key  { font-weight: 600; color: var(--accent); }
+
+.btn-next {
+  width: 100%;
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  padding: 15px;
+  border-radius: var(--r-sm);
+  font-family: inherit;
+  font-size: 0.93rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  cursor: pointer;
+  box-shadow: 0 4px 16px rgba(0,122,255,0.32);
+  transition: all 0.2s cubic-bezier(0.22,1,0.36,1);
+  animation: itemIn 0.35s cubic-bezier(0.22,1,0.36,1) 0.1s both;
+}
+.btn-next:hover { background: var(--accent-dark); transform: translateY(-1px); box-shadow: 0 8px 24px rgba(0,122,255,0.4); }
+
+/* ─── SUMMARY ─── */
+#summary.active {
+  align-items: center;
+  justify-content: center;
+  padding: max(env(safe-area-inset-top,0px),40px) 24px max(env(safe-area-inset-bottom,0px),48px);
+}
+
+.sum-inner {
+  width: 100%;
+  max-width: 480px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.sum-icon {
+  font-size: 76px;
+  margin-bottom: 16px;
+  animation: iconIn 0.7s cubic-bezier(0.34,1.56,0.64,1) 0.1s both;
+}
+
+.sum-title {
+  font-size: clamp(1.7rem,5vw,2.3rem);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  animation: itemIn 0.5s cubic-bezier(0.22,1,0.36,1) 0.2s both;
+}
+
+.sum-sub {
+  color: var(--text-3);
+  font-size: 0.93rem;
+  margin-top: 6px;
+  margin-bottom: 26px;
+  animation: itemIn 0.5s cubic-bezier(0.22,1,0.36,1) 0.25s both;
+}
+
+.big-score {
+  font-size: clamp(2.8rem,9vw,3.8rem);
+  font-weight: 700;
+  letter-spacing: -0.04em;
+  color: var(--accent);
+  line-height: 1;
+  animation: scoreIn 0.65s cubic-bezier(0.34,1.56,0.64,1) 0.3s both;
+}
+@keyframes scoreIn {
+  from { opacity: 0; transform: scale(0.5); }
+  to   { opacity: 1; transform: scale(1);   }
+}
+
+.score-note {
+  color: var(--text-3);
+  font-size: 0.86rem;
+  margin: 8px 0 28px;
+  animation: itemIn 0.5s cubic-bezier(0.22,1,0.36,1) 0.38s both;
+}
+
+.sum-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 11px;
+  width: 100%;
+  margin-bottom: 28px;
+  animation: itemIn 0.5s cubic-bezier(0.22,1,0.36,1) 0.43s both;
+}
+
+.sum-card {
+  background: var(--surface);
+  border-radius: var(--r-sm);
+  padding: 18px;
+  box-shadow: var(--shadow-sm);
+}
+.sum-val { font-size: 1.9rem; font-weight: 700; letter-spacing: -0.03em; color: var(--text); }
+.sum-lbl { font-size: 0.74rem; color: var(--text-3); margin-top: 3px; }
+
+.btn-restart {
+  width: 100%;
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  padding: 17px;
+  border-radius: var(--r-sm);
+  font-family: inherit;
+  font-size: 1rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  cursor: pointer;
+  box-shadow: 0 4px 20px rgba(0,122,255,0.38);
+  transition: all 0.2s cubic-bezier(0.22,1,0.36,1);
+  animation: itemIn 0.5s cubic-bezier(0.22,1,0.36,1) 0.5s both;
+}
+.btn-restart:hover { background: var(--accent-dark); transform: translateY(-2px); box-shadow: 0 8px 28px rgba(0,122,255,0.42); }
+
+/* ─── RESPONSIVE ─── */
+@media (max-width: 480px) {
+  .quiz-header  { padding: 10px 16px 8px; }
+  .quiz-body    { padding: 16px 16px 40px; }
+  .q-card       { padding: 18px; }
+  .opt-btn      { padding: 13px 14px; font-size: 0.83rem; }
+  .home-icon, .sum-icon { font-size: 60px; }
+}
+</style>
+</head>
+<body>
+
+<!-- HOME -->
+<div id="home" class="screen active">
+  <div class="home-inner">
+    <div class="home-icon">💊</div>
+    <h1 class="home-title">Quiz MUP1</h1>
+    <p class="home-sub">149 Médicaments — MOA &amp; Indications</p>
+
+    <div class="rules-card">
+      <div class="rule-row"><span class="rule-ic">🎯</span><span>100 questions tirées aléatoirement parmi 149 médicaments</span></div>
+      <div class="rule-row"><span class="rule-ic">🔄</span><span>Les erreurs sont reposées jusqu'à maîtrise complète</span></div>
+      <div class="rule-row"><span class="rule-ic">⭐</span><span><strong>+2 pts</strong> au premier essai &nbsp;·&nbsp; <strong>+1 pt</strong> à la révision</span></div>
+      <div class="rule-row"><span class="rule-ic">⌨️</span><span>A–D ou 1–4 pour répondre · Entrée pour continuer</span></div>
+    </div>
+
+    <div class="type-wrap">
+      <div class="type-label">Types de questions</div>
+      <div class="type-grid">
+        <button class="btn-type selected" id="bt-nom_moa" onclick="toggleType('nom_moa')">🔬 MOA</button>
+        <button class="btn-type selected" id="bt-moa_nom" onclick="toggleType('moa_nom')">🔍 Retrouver par MOA</button>
+        <button class="btn-type selected" id="bt-nom_ind" onclick="toggleType('nom_ind')">💊 Indications</button>
+        <button class="btn-type selected" id="bt-ind_nom" onclick="toggleType('ind_nom')">🔍 Retrouver par Ind.</button>
+      </div>
+    </div>
+
+    <button class="btn-start" onclick="startQuiz()">Commencer le Quiz →</button>
+    <p class="cats-line">Dermatologie · SNC · Gastro-entérologie · Pneumologie · ORL<br>Ophtalmologie · Métabolisme · Cardiologie · Gynécologie · Infectiologie · Urologie · Sang · Oncologie</p>
+  </div>
+</div>
+
+<!-- QUIZ -->
+<div id="quiz" class="screen">
+  <div class="quiz-header">
+    <div class="quiz-topbar">
+      <span class="quiz-logo">Quiz MUP1</span>
+      <button class="btn-quit" onclick="confirmQuit()">✕ Quitter</button>
+    </div>
+    <div class="prog-track"><div class="prog-fill" id="pbar" style="width:0%"></div></div>
+    <div class="stats-row">
+      <div class="chip" id="s-score">Score : 0 pts</div>
+      <div class="chip" id="s-mastered">Maîtrisés : 0 / 100</div>
+      <div class="chip" id="s-queue">En attente : 100</div>
+    </div>
+  </div>
+  <div class="quiz-body">
+    <div class="badge-row">
+      <span class="badge b-qtype" id="b-qtype">—</span>
+      <span class="badge b-retry" id="b-retry" style="display:none">🔄 Révision</span>
+      <span class="badge b-cat" id="b-cat">—</span>
+    </div>
+    <div class="q-card" id="qbox"></div>
+    <div class="opts" id="opts"></div>
+    <div class="fb-area" id="fb-area" style="display:none">
+      <div class="fb-banner" id="fb-banner"></div>
+      <div class="fiche" id="fiche"></div>
+      <button class="btn-next" id="btn-next" onclick="nextQuestion()">Question suivante →</button>
+    </div>
+  </div>
+</div>
+
+<!-- SUMMARY -->
+<div id="summary" class="screen">
+  <div class="sum-inner">
+    <div class="sum-icon">🏆</div>
+    <h2 class="sum-title">Quiz Terminé !</h2>
+    <p class="sum-sub">Tous les 100 médicaments sont maîtrisés</p>
+    <div class="big-score" id="fscore"></div>
+    <div class="score-note" id="fnote"></div>
+    <div class="sum-grid" id="fgrid"></div>
+    <button class="btn-restart" onclick="showScreen('home')">Recommencer →</button>
+  </div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════
+// DATASET — 149 médicaments
+// ═══════════════════════════════════════════════
+const MEDICATIONS = [
+  // ── DERMATOLOGIE ──
+  {nom:"Fucidin",dci:"Acide fusidique",cat:"Dermatologie",moa:"Inhibe la synthèse protéique bactérienne (élongation du facteur EF-G) → bactéricide contre S.aureus",ind:"Infections cutanées bactériennes : impétigo, folliculite, furoncle"},
+  {nom:"Diflucan",dci:"Fluconazole",cat:"Dermatologie",moa:"Inhibe CYP51 fongique (14α-déméthylase) → ↓ ergostérol membranaire → altération membrane fongique (triazolé)",ind:"Candidoses systémiques et superficielles, cryptococcose, dermatophytoses"},
+  {nom:"Imazol/Imacort",dci:"Clotrimazole + Hexamidine + Prednisolone",cat:"Dermatologie",moa:"Inhibe ergostérol (antifongique imidazolé) + antiseptique (hexamidine) + anti-inflammatoire (corticoïde)",ind:"Dermatoses cutanées surinfectées avec composante inflammatoire"},
+  {nom:"Lamisil",dci:"Terbinafine",cat:"Dermatologie",moa:"Inhibe squalène époxydase → accumulation squalène toxique + ↓ ergostérol → mort fongique",ind:"Dermatophytoses : onychomycose, tinea pedis/corporis/capitis"},
+  {nom:"Loceryl",dci:"Amorolfine",cat:"Dermatologie",moa:"Inhibe delta-14 réductase ET delta-7/8 isomérase → ↓ ergostérol (double blocage)",ind:"Onychomycoses légères à modérées (vernis à ongles)"},
+  {nom:"Scabi-Med",dci:"Perméthrine",cat:"Dermatologie",moa:"Ouvre canaux Na+ → dépolarisation prolongée → paralysie spastique puis mort du parasite",ind:"Gale (Sarcoptes scabiei) dès 2 mois, pédiculose"},
+  {nom:"Subvectin",dci:"Ivermectine (oral)",cat:"Dermatologie",moa:"Se lie canaux Cl- glutamate-dépendants → ↑ perméabilité Cl- → hyperpolarisation → paralysie flasque du parasite",ind:"Gale (dès 15 kg), certaines filarioses, onchocercose"},
+  {nom:"Betnovate",dci:"Bétaméthasone valérate",cat:"Dermatologie",moa:"Glucocorticoïde classe III — inhibe phospholipase A2 → ↓ médiateurs inflammatoires (PG, LT)",ind:"Dermatoses inflammatoires modérées à sévères : eczéma, psoriasis, dermatite de contact"},
+  {nom:"Dermovate",dci:"Clobétasol propionate",cat:"Dermatologie",moa:"Glucocorticoïde classe IV (très puissant) — même mécanisme que classe III mais puissance maximale",ind:"Dermatoses sévères résistantes aux autres corticoïdes topiques"},
+  {nom:"Sanadermil",dci:"Hydrocortisone acétate",cat:"Dermatologie",moa:"Glucocorticoïde classe I (faible) — inhibe phospholipase A2 → ↓ médiateurs inflammatoires locaux",ind:"Dermatoses légères : prurit, eczéma léger, érythème de couche"},
+  {nom:"Triderm",dci:"Bétaméthasone + Clotrimazole + Gentamicine",cat:"Dermatologie",moa:"Corticoïde (anti-inflammatoire) + imidazolé (antifongique) + aminoglycoside (antibactérien) → triple action",ind:"Dermatoses surinfectées mixtes (bactéries + champignons + inflammation)"},
+  {nom:"Benzac",dci:"Peroxyde de benzoyle",cat:"Dermatologie",moa:"Libère O2 actif → effet kératolytique + bactéricide (↓ P.acnes par oxydation)",ind:"Acné légère à modérée : points noirs, comédons, lésions inflammatoires légères"},
+  {nom:"Roaccutan",dci:"Isotrétinoïne",cat:"Dermatologie",moa:"Rétinoïde oral → ↓ sébum (↓ glandes sébacées), ↓ P.acnes, ↓ kératinisation folliculaire, ↓ inflammation",ind:"Acné sévère nodulo-kystique résistante aux traitements conventionnels"},
+  {nom:"Humira",dci:"Adalimumab",cat:"Dermatologie",moa:"Anticorps monoclonal anti-TNF-α → neutralise TNF-α circulant et lié aux membranes → ↓ inflammation",ind:"Psoriasis sévère, polyarthrite rhumatoïde, maladie de Crohn, rectocolite hémorragique"},
+  {nom:"Rosalox",dci:"Métronidazole topique",cat:"Dermatologie",moa:"Anti-inflammatoire local + ↓ espèces réactives de l'oxygène + ↓ Demodex folliculorum",ind:"Rosacée érythémateuse (rougeurs persistantes)"},
+  {nom:"Soolantra",dci:"Ivermectine topique",cat:"Dermatologie",moa:"Tue Demodex folliculorum (acarien) → ↓ inflammation papulopustuleuse",ind:"Rosacée papulopustuleuse (boutons et pustules)"},
+  {nom:"Atarax",dci:"Hydroxyzine",cat:"Dermatologie",moa:"Antihistaminique H1 de 1ère génération + antagoniste α1 + anticholinergique → sédation centrale et périphérique",ind:"Prurit, urticaire, anxiété légère à modérée, prémédication anesthésique"},
+  {nom:"Aldara",dci:"Imiquimod",cat:"Dermatologie",moa:"Agoniste TLR-7/8 → activation immunité innée locale → ↑ interférons + cytokines → destruction cellules infectées/tumorales",ind:"Condylomes acuminés, carcinome basocellulaire superficiel, kératoses actiniques"},
+  {nom:"Nizoral",dci:"Kétoconazole",cat:"Dermatologie",moa:"Imidazolé — inhibe CYP51 fongique → ↓ ergostérol membranaire de Malassezia (shampoing = usage local)",ind:"Pityriasis versicolor, dermatite séborrhéique, pellicules (shampoing)"},
+  {nom:"Betadine/Betaseptic",dci:"Povidone iodée",cat:"Dermatologie",moa:"Libère progressivement iode libre (I2) → iodation irréversible protéines/ADN/enzymes microbiens → spectre large (bactéries, virus, champignons, spores)",ind:"Désinfection plaies, préopératoire, antisepsie cutanée et muqueuse"},
+  {nom:"Ialugen/-plus",dci:"Sulfadiazine d'argent + Acide hyaluronique",cat:"Dermatologie",moa:"Ag+ → cibles multiples bactériennes (ADN, enzymes) + acide hyaluronique → hydratation et cicatrisation tissulaire",ind:"Brûlures du 2e/3e degré, plaies chroniques, escarres"},
+  {nom:"Merfen/Vita-Merfen",dci:"Chlorhexidine + Benzoxonium chlorure",cat:"Dermatologie",moa:"Chlorhexidine (déstabilise membrane cellulaire) + Benzoxonium (lyse membranaire) → antisepsie locale",ind:"Petites plaies, égratignures, brûlures superficielles"},
+  {nom:"Emla",dci:"Lidocaïne + Prilocaïne",cat:"Dermatologie",moa:"Anesthésiques locaux — bloquent canaux Na+ voltage-dépendants → ↓ conduction nerveuse → anesthésie locale",ind:"Anesthésie locale superficielle : ponctions, pose de cathéter, procédures dermatologiques mineures"},
+  // ── SNC ──
+  {nom:"Aleve",dci:"Naproxène",cat:"SNC",moa:"AINS non sélectif — inhibe COX-1 et COX-2 → ↓ prostaglandines → effet antalgique, anti-inflammatoire et antipyrétique",ind:"Douleurs légères à modérées, dysménorrhée, arthralgies, inflammation"},
+  {nom:"Aspirin",dci:"Acide acétylsalicylique",cat:"SNC",moa:"Inhibe COX irréversiblement par acétylation → ↓ TXA2 (antiplaquettaire) + ↓ prostaglandines. Inhibe aussi NF-κB et phospholipase A2",ind:"Antalgique/antipyrétique, antiplaquettaire cardiovasculaire (faible dose), anti-inflammatoire"},
+  {nom:"Fenatyl-Mepha",dci:"Fentanyl",cat:"SNC",moa:"Agoniste µ pur — 100× plus puissant que morphine, très liposoluble → passage BHE rapide. Substrat CYP3A4. Patch transdermique",ind:"Douleurs chroniques intenses et prolongées (patch), dès 2 ans, si intolérance voie orale"},
+  {nom:"Brufen",dci:"Ibuprofène",cat:"SNC",moa:"AINS non sélectif — inhibe COX-1 et COX-2. Substrat et inhibiteur modéré CYP2C9",ind:"Douleurs légères à modérées, fièvre, dysménorrhée, inflammation ostéo-articulaire"},
+  {nom:"Celebrex",dci:"Célécoxib",cat:"SNC",moa:"AINS sélectif COX-2 → ↓ PG inflammatoires tout en épargnant COX-1 gastrique → meilleure tolérance GI",ind:"Arthrose, polyarthrite rhumatoïde : douleurs et inflammation chroniques"},
+  {nom:"Novalgin",dci:"Métamizole",cat:"SNC",moa:"Mécanisme mixte et unique : inhibition COX + activation canaux TRPA1 + effet central. Aussi spasmolytique sur muscles lisses",ind:"Douleurs intenses (coliques rénales/biliaires), forte fièvre résistante, douleurs post-opératoires"},
+  {nom:"Panadol",dci:"Paracétamol",cat:"SNC",moa:"Inhibe COX-3 central + canaux TRPA1 → effet antalgique et antipyrétique central. Pas d'effet anti-inflammatoire périphérique",ind:"Antalgique et antipyrétique de 1ère ligne : céphalées, fièvre, douleurs légères à modérées"},
+  {nom:"Ponstan",dci:"Acide méfénamique",cat:"SNC",moa:"AINS — inhibe COX-1 et COX-2 → ↓ prostaglandines. Antagoniste des récepteurs aux prostaglandines",ind:"Dysménorrhée primaire, douleurs légères à modérées"},
+  {nom:"MST Continus",dci:"Morphine",cat:"SNC",moa:"Agoniste récepteurs µ pur — libération prolongée → ↓ transmission nociceptive centrale et périphérique",ind:"Douleurs fortes à très fortes, soins palliatifs, douleurs cancéreuses"},
+  {nom:"Oxynorm",dci:"Oxycodone",cat:"SNC",moa:"Agoniste µ ET κ — 1.5-2× plus puissant que morphine. Meilleure biodisponibilité orale (60-80%)",ind:"Douleurs fortes, douleurs viscérales et neuropathiques, alternative si intolérance à la morphine"},
+  {nom:"Palladon",dci:"Hydromorphone",cat:"SNC",moa:"Agoniste µ pur — 5-7× plus puissant que morphine. Métabolites moins actifs → avantageux si IR",ind:"Douleurs intenses, insuffisance rénale (métabolites moins toxiques que morphine)"},
+  {nom:"Subutex",dci:"Buprénorphine",cat:"SNC",moa:"Agoniste PARTIEL µ + antagoniste κ → haute affinité (position haute dans récepteur → activation partielle ~60%) → effet plafond",ind:"Substitution opioïdes (dépendance), douleurs modérées chroniques"},
+  {nom:"Tramal",dci:"Tramadol",cat:"SNC",moa:"Agoniste µ faible + inhibiteur recapture NA/5HT (double mécanisme). Substrat CYP2D6 → métabolite M1 plus actif",ind:"Douleurs modérées à modérément fortes, douleurs neuropathiques"},
+  {nom:"Axura",dci:"Mémantine",cat:"SNC",moa:"Antagoniste non compétitif voltage-dépendant des récepteurs NMDA → ↓ excitotoxicité glutamate → neuroprotection",ind:"Maladie d'Alzheimer modérée à sévère"},
+  {nom:"Exelon",dci:"Rivastigmine",cat:"SNC",moa:"Inhibe AChE ET BuChE (double inhibition) → ↑ acétylcholine synaptique. BuChE reste active dans Parkinson → double inhibition utile",ind:"Maladie d'Alzheimer légère à modérée, démence parkinsonienne"},
+  {nom:"Cipralex",dci:"Escitalopram",cat:"SNC",moa:"ISRS — inhibe sélectivement transporteur SERT de recapture sérotonine → ↑ 5HT synaptique. Allonge QT",ind:"Dépression, trouble anxieux généralisé (TAG), phobie sociale, trouble panique"},
+  {nom:"Efexor ER",dci:"Venlafaxine",cat:"SNC",moa:"IRSN — inhibe recapture sérotonine (SERT) ET noradrénaline (NET) → ↑ 5HT et NA synaptiques. ↑ PA à forte dose",ind:"Dépression, TAG, douleurs neuropathiques, phobie sociale"},
+  {nom:"Jarsin",dci:"Hypericum perforatum (Millepertuis)",cat:"SNC",moa:"Inhibe recapture 5HT/NA/DA (mécanisme phytothérapeutique). INDUCTEUR PUISSANT CYP3A4",ind:"Dépression légère à modérée"},
+  {nom:"Lithiofor",dci:"Carbonate de lithium",cat:"SNC",moa:"Mécanisme exact inconnu — modifie transmission monoaminergique + inositol phosphate. Marge thérapeutique très étroite. Élimination 100% rénale",ind:"Trouble bipolaire (prévention manies et dépressions), migraine chronique"},
+  {nom:"Remeron",dci:"Mirtazapine",cat:"SNC",moa:"NaSSA — antagoniste α2 présynaptique → ↑ NA + ↑ 5HT. Antagoniste H1 (sédation, paradoxale: faible dose plus sédatif). Antagoniste 5HT2/3 (pas d'EI sexuels)",ind:"Dépression (surtout si insomnie et anorexie associées), anxiété"},
+  {nom:"Surmontil",dci:"Trimipramine",cat:"SNC",moa:"ATC — inhibe recapture NA et 5HT + antagoniste H1 + anticholinergique + bloque canaux Na+ cardiaques (mnémo: HASAM)",ind:"Dépression avec insomnie sévère"},
+  {nom:"Trittico",dci:"Trazodone",cat:"SNC",moa:"SARI — inhibe recapture 5HT + antagoniste 5HT2A/2C (pas d'EI sexuels) + antagoniste H1 (sédation). Substrat CYP3A4. EI: priapisme rare",ind:"Dépression avec insomnie, anxiété, faible dose comme somnifère sans dépendance"},
+  {nom:"Haldol",dci:"Halopéridol",cat:"SNC",moa:"Neuroleptique typique 1ère génération — antagoniste D2 puissant → ↓ tonus dopaminergique dans voie mésolimbique (effet antipsychotique) et nigrostriée (EI extrapyramidaux)",ind:"Schizophrénie, psychoses aiguës, agitation en démence, Gilles de la Tourette, nausées réfractaires, hoquet (SAGNH)"},
+  {nom:"Leponex",dci:"Clozapine",cat:"SNC",moa:"Neuroleptique atypique — antagoniste D2 modéré + D4 + 5HT2A (épargne striatum) + H1 + M → quasi pas d'EI extrapyramidaux. NFS hebdomadaire obligatoire (agranulocytose)",ind:"Schizophrénie résistante aux autres antipsychotiques"},
+  {nom:"Madopar",dci:"Lévodopa + Bensérazide",cat:"SNC",moa:"Lévodopa = précurseur dopamine → traverse BHE → décarboxylée en DA. Bensérazide = inhibe décarboxylase périphérique → ↑ biodisponibilité cérébrale + ↓ EI périphériques",ind:"Maladie de Parkinson — 1ère ligne (surtout >65 ans)"},
+  {nom:"Sirdalud",dci:"Tizanidine",cat:"SNC",moa:"Agoniste α2 central → ↓ libération glutamate présynaptique → ↓ activation NMDA → ↓ transmission interneurones spinaux → myorelaxant. Substrat CYP1A2",ind:"Spasticité douloureuse (SEP, lésions médullaires/cérébrales, AVC), contractures musculaires"},
+  {nom:"Depakine",dci:"Acide valproïque",cat:"SNC",moa:"Bloque canaux Na+ voltage-dépendants + ↑ GABA + inhibe CYP2C9. Tératogène majeur (CI femme en âge de procréer)",ind:"Épilepsies généralisées et partielles, trouble bipolaire (prévention manies)"},
+  {nom:"Lamictal",dci:"Lamotrigine",cat:"SNC",moa:"Bloque canaux Na+ voltage-dépendants + ↓ libération glutamate → ↓ excitabilité neuronale. Métabolisme glucuronoconjugaison (UGT). RMG: Stevens-Johnson",ind:"Épilepsie partielle/généralisée, trouble bipolaire (prévention dépression)"},
+  {nom:"Tegretol",dci:"Carbamazépine",cat:"SNC",moa:"Bloque canaux Na+ voltage-dépendants + auto-inducteur CYP3A4 → inducteur puissant de nombreux médicaments",ind:"Épilepsie, névralgie du trijumeau, trouble bipolaire (prévention manies)"},
+  {nom:"Benocten",dci:"Diphénhydramine",cat:"SNC",moa:"Antihistaminique H1 1ère génération lipophile → traverse BHE → sédation centrale + effets anticholinergiques",ind:"Troubles du sommeil (ponctuel), toux nocturne, prurit et rhinite allergique d'accompagnement"},
+  {nom:"Temesta",dci:"Lorazépam",cat:"SNC",moa:"Benzodiazépine — potentialise GABA-A → ↑ fréquence ouverture canal Cl- → hyperpolarisation. Glucuronoconjugaison (pas de CYP) → PA de choix en polymédicamentation",ind:"Anxiété, troubles du sommeil, prémédication chirurgicale, état de mal épileptique"},
+  {nom:"Imigran",dci:"Sumatriptan",cat:"SNC",moa:"Agoniste sélectif 5HT1B/1D → vasoconstriction vaisseaux méningés dilatés + ↓ libération CGRP et substance P → ↓ inflammation neurogène. Métabolisé par MAO-A",ind:"Traitement aigu des crises de migraine (avec ou sans aura) — 2ème ligne après AINS"},
+  {nom:"Betaserc",dci:"Bétahistine",cat:"SNC",moa:"Agoniste H1 + antagoniste H3 → ↑ microcirculation oreille interne + ↓ pression endolymphatique",ind:"Syndrome de Ménière (vertiges, acouphènes, surdité), vertiges vestibulaires"},
+  {nom:"Methotrexat Sandoz",dci:"Méthotrexate",cat:"SNC",moa:"Inhibe DHFR (dihydrofolate réductase) → ↓ synthèse purines/pyrimidines → ↓ prolifération cellulaire. PAS métabolisé par CYP3A4. Élimination rénale",ind:"Polyarthrite rhumatoïde, psoriasis sévère, cancers (leucémies, tumeurs solides), maladies auto-immunes"},
+  // ── GASTRO-ENTÉROLOGIE ──
+  {nom:"Doxiproct/-plus",dci:"Dobésilate de calcium + Lidocaïne",cat:"Gastro-entérologie",moa:"Dobésilate = veinotonique (↓ perméabilité capillaire) + lidocaïne = anesthésique local (bloque Na+)",ind:"Hémorroïdes symptomatiques (douleur, démangeaisons, saignements locaux)"},
+  {nom:"Imodium",dci:"Lopéramide",cat:"Gastro-entérologie",moa:"Agoniste µ périphérique (ne passe pas BHE) → ↓ péristaltisme + ↑ tonus sphincter anal + ↓ sécrétion intestinale",ind:"Diarrhée aiguë et chronique (sauf infectieuse bactérienne)"},
+  {nom:"Normolytoral",dci:"Sels de réhydratation orale",cat:"Gastro-entérologie",moa:"Compensation pertes hydro-électrolytiques par absorption couplée Na+/glucose (cotransporteur SGLT1)",ind:"Déshydratation liée à diarrhée, vomissements, chaleur"},
+  {nom:"Alucol",dci:"Hydroxyde d'aluminium + Hydroxyde de magnésium",cat:"Gastro-entérologie",moa:"Neutralise HCl gastrique → ↑ pH gastrique → ↓ acidité. Al = constipant, Mg = laxatif (effets opposés s'équilibrent)",ind:"Brûlures d'estomac, reflux gastro-oesophagien, ulcère gastro-duodénal"},
+  {nom:"Itinerol B6",dci:"Méclozine + Pyridoxine + Caféine",cat:"Gastro-entérologie",moa:"Méclozine = antihistaminique H1 + anticholinergique → ↓ réflexe nauséeux central. Pyridoxine (B6) = cofacteur synthèse neurotransmetteurs antiémétiques",ind:"Nausées/vomissements (grossesse, cinétose), mal des transports"},
+  {nom:"Agiolax",dci:"Ispaghula (Psyllium) + Séné",cat:"Gastro-entérologie",moa:"Psyllium = laxatif de lest (mucilage → gonfle → ↑ volume selles). Séné = laxatif stimulant (anthraquinoïdes → ↑ motilité colique)",ind:"Constipation occasionnelle (dès 12 ans) — CI grossesse car séné stimulant!"},
+  {nom:"Motilium",dci:"Dompéridone",cat:"Gastro-entérologie",moa:"Antagoniste D2 périphérique (ne passe PAS BHE) → ↑ motilité gastrique + ↑ tonus sphincter inférieur oesophage. Allonge QT",ind:"Nausées, vomissements, gastroparésie, reflux gastro-oesophagien"},
+  {nom:"Paspertin",dci:"Métoclopramide",cat:"Gastro-entérologie",moa:"Antagoniste D2 central et périphérique + agoniste 5HT4 → procinétique puissant. EI extrapyramidaux (contrairement à Motilium)",ind:"Nausées/vomissements (chimio, post-opératoires, migraine), gastroparésie, RGO"},
+  {nom:"Bulboid",dci:"Glycérol",cat:"Gastro-entérologie",moa:"Hyperosmotique local → ↑ eau dans le rectum + effet lubrifiant → ↓ consistance selles → facilitation évacuation",ind:"Constipation occasionnelle (suppositoire), préparer examen rectal"},
+  {nom:"Nexium",dci:"Ésoméprazole",cat:"Gastro-entérologie",moa:"IPP — inhibe H+/K+-ATPase (pompe à protons) de façon irréversible → ↓↓ sécrétion acide gastrique",ind:"RGO, ulcère gastro-duodénal, éradication H.pylori, syndrome de Zollinger-Ellison"},
+  {nom:"Riopan",dci:"Magaldrate",cat:"Gastro-entérologie",moa:"Antacide complexe Al-Mg → neutralise HCl → ↑ pH gastrique + ↓ activité pepsine + effet cytoprotecteur",ind:"Brûlures d'estomac, reflux, ulcère, gastrite"},
+  {nom:"Dulcolax",dci:"Bisacodyl",cat:"Gastro-entérologie",moa:"Laxatif de contact/stimulant — contact direct avec muqueuse colique → ↑ péristaltisme + ↓ réabsorption eau/Na+. Comprimés ET suppositoires (PAS sirop!)",ind:"Constipation occasionnelle, préparation coloscopie"},
+  {nom:"Importal",dci:"Lactitol monohydrate",cat:"Gastro-entérologie",moa:"Laxatif osmotique — non absorbé → fermentation colique → ↑ pression osmotique → ↑ eau dans selles",ind:"Constipation chronique, encéphalopathie hépatique"},
+  {nom:"Transipeg",dci:"Macrogol + Électrolytes",cat:"Gastro-entérologie",moa:"Laxatif osmotique — macrogol non absorbé (polymère inerte) → retient l'eau dans le côlon. Pas d'adaptation posologique IR/âgés car non absorbé",ind:"Constipation — aucune adaptation posologique nécessaire (non absorbé!)"},
+  {nom:"Bioflorin",dci:"Enterococcus faecium SF68",cat:"Gastro-entérologie",moa:"Probiotique LAB (Lactic Acid Bacteria) — restaure équilibre flore intestinale → compétition avec pathogènes + ↑ immunité locale",ind:"Diarrhée (traitement et prévention), rééquilibrage flore post-antibiothérapie"},
+  {nom:"Buscopan",dci:"Butylscopolamine",cat:"Gastro-entérologie",moa:"Anticholinergique ammonium quaternaire (NE PASSE PAS BHE) → bloque récepteurs M muscariniques périphériques → ↓ tonus et spasmes muscles lisses",ind:"Spasmes GI (coliques), spasmes biliaires et urinaires, dysménorrhée spasmodique"},
+  {nom:"Cobantril",dci:"Pyrantel",cat:"Gastro-entérologie",moa:"Bloque jonction neuromusculaire parasite (agoniste nicotinique → dépolarisation persistante) → paralysie spastique → mort du ver",ind:"Nématodes : oxyures, ascaris, ankylostomes"},
+  {nom:"Vermox",dci:"Mébendazole",cat:"Gastro-entérologie",moa:"Inhibe polymérisation tubuline du parasite → ↓ absorption glucose → déplétion énergétique → mort lente. Spectre: nématodes ET certains cestodes (PAS protozoaires/bactéries/virus)",ind:"Nématodes (oxyures, ascaris, trichures, ankylostomes) et certains cestodes"},
+  // ── PNEUMOLOGIE ──
+  {nom:"Atrovent",dci:"Ipratropium",cat:"Pneumologie",moa:"Antagoniste muscarinique M3 bronchique (ammonium quaternaire → ne passe PAS BHE) → ↓ bronchoconstriction + ↓ sécrétion mucus",ind:"BPCO (bronchodilatateur 1ère ligne), bronchospasme aigu, bronchite chronique"},
+  {nom:"Spiriva",dci:"Tiotropium",cat:"Pneumologie",moa:"Anticholinergique LAMA sélectif M3 (longue durée 24h) — même mécanisme qu'Atrovent mais 1 prise/jour. BPCO UNIQUEMENT (pas asthme seul)",ind:"BPCO — traitement de fond bronchodilatateur (1 prise/jour)"},
+  {nom:"Seretide/Serevent",dci:"Fluticasone + Salmétérol / Salmétérol",cat:"Pneumologie",moa:"Fluticasone (CSI) = inhibe phospholipase A2 → ↓ inflammation bronchique. Salmétérol (β2-LABA) = bronchodilatation longue durée. Serevent SEUL CI dans asthme!",ind:"Asthme persistant modéré à sévère, BPCO sévère avec exacerbations fréquentes"},
+  {nom:"Symbicort",dci:"Budésonide + Formotérol",cat:"Pneumologie",moa:"Budésonide (CSI) = anti-inflammatoire bronchique. Formotérol (β2-LABA) = bronchodilatation rapide et prolongée (début 1-3 min). Synergie anti-inflammatoire + bronchodilatatrice",ind:"Asthme persistant, BPCO sévère — traitement de fond + possible traitement de crise (Symbicort)"},
+  {nom:"Bexin",dci:"Bromhexine",cat:"Pneumologie",moa:"Mucolytique — ↓ viscosité mucus (dépolymérise mucopolysaccharides) + ↑ activité ciliaire + ↑ sécrétion surfactant",ind:"Toux productive avec mucus épais et difficile à expectorer (bronchite, BPCO)"},
+  {nom:"Ventolin",dci:"Salbutamol",cat:"Pneumologie",moa:"β2-agoniste SABA — activation adénylate cyclase → ↑ AMPc → ↓ Ca2+ intracellulaire → bronchodilatation rapide (5-15 min). Début action rapide",ind:"Bronchospasme aigu (asthme, BPCO), prévention bronchospasme d'effort"},
+  {nom:"Bilaxten",dci:"Bilastine",cat:"Pneumologie",moa:"Antihistaminique H1 2ème génération — ne passe PAS BHE → pas sédatif. Inhibiteur P-gp → interaction kétoconazole/érythromycine",ind:"Rhinite allergique saisonnière et perannuelle, urticaire allergique"},
+  {nom:"Zyrtec",dci:"Cétirizine",cat:"Pneumologie",moa:"Antihistaminique H1 2ème génération — légèrement sédatif (passage BHE partiel). Métabolite actif de l'hydroxyzine",ind:"Rhinite allergique, urticaire, conjonctivite allergique, prurit"},
+  {nom:"Revatio",dci:"Sildénafil (HTAP)",cat:"Pneumologie",moa:"Inhibiteur PDE5 → ↑ GMPc → vasodilatation artérielle pulmonaire → ↓ résistances vasculaires pulmonaires. Même PA que Viagra mais indication différente",ind:"Hypertension artérielle pulmonaire (HTAP) — ↑ capacité d'exercice"},
+  // ── ORL ──
+  {nom:"Fluimucil",dci:"Acétylcystéine",cat:"ORL",moa:"Réduit ponts disulfures des mucoprotéines du mucus → ↓ viscosité mucus. ANTIDOTE paracétamol (reconstitue glutathion hépatique)",ind:"Toux avec mucus épais et difficile à expectorer, antidote surdosage paracétamol"},
+  {nom:"NeoCitran",dci:"Paracétamol + Pseudoéphédrine",cat:"ORL",moa:"Paracétamol = antalgique/antipyrétique central (COX-3 SNC). Pseudoéphédrine = sympathomimétique α1 → vasoconstriction muqueuse nasale → ↓ congestion",ind:"Grippe, refroidissement : fièvre + congestion nasale + douleurs"},
+  {nom:"Otalgan",dci:"Phénazone + Procaïne (Benzocaïne)",cat:"ORL",moa:"Phénazone = antalgique/anti-inflammatoire local (inhibe COX). Procaïne = anesthésique local (bloque Na+) → soulagement douleur auriculaire. CI tympan perforé!",ind:"Otites externe et moyenne douloureuses (douleur auriculaire)"},
+  {nom:"Hextril",dci:"Hexétidine",cat:"ORL",moa:"Antiseptique/antifongique à large spectre oropharyngé — action bactéricide + antifongique sur agents pathogènes oropharyngés. RMG: agueusie",ind:"Amygdalite, pharyngite, laryngite, stomatite, mauvaise haleine, hygiène buccale"},
+  {nom:"Nasivin",dci:"Oxymétazoline",cat:"ORL",moa:"Sympathomimétique α1 → vasoconstriction muqueuse nasale → ↓ œdème → ↓ congestion. Effet rebond si >5-7 jours",ind:"Rhinite aiguë, sinusite aiguë, catarrhe tubaire"},
+  {nom:"Nasonex",dci:"Mométasone",cat:"ORL",moa:"Glucocorticoïde synthétique intranasal puissant → inhibe NF-κB → ↓ médiateurs inflammatoires et allergiques locaux (PG, cytokines, histamine). Biodisponibilité systémique <1%",ind:"Rhinite allergique saisonnière et perannuelle, rhino-sinusite, polypes nasaux"},
+  // ── OPHTALMOLOGIE ──
+  {nom:"Floxal",dci:"Ofloxacine",cat:"Ophtalmologie",moa:"Fluoroquinolone ophtalmique — inhibe ADN gyrase (topo-isomérase II) et IV → bloque réplication ADN bactérien → bactéricide",ind:"Conjonctivites bactériennes, kératites bactériennes, ulcères cornéens"},
+  {nom:"Fucithalmic",dci:"Acide fusidique ophtalmique",cat:"Ophtalmologie",moa:"Même PA que Fucidin (cutané)! Inhibe élongation facteur EF-G → ↓ synthèse protéique bactérienne → bactéricide. Gel ophtalmique visqueux (reste plus longtemps sur l'œil)",ind:"Conjonctivite bactérienne à S.aureus, blépharite"},
+  {nom:"Desomedin",dci:"Hexamidine ophtalmique",cat:"Ophtalmologie",moa:"Antiseptique cationique (diamidine) → se fixe membrane bactérienne chargée négativement → ↑ perméabilité → lyse. Unique: actif contre Acanthamoeba (porteurs de lentilles!)",ind:"Conjonctivites, kératoconjonctivites, kératite à Acanthamoeba (porteurs de lentilles)"},
+  {nom:"Timoptic",dci:"Timolol",cat:"Ophtalmologie",moa:"Bêtabloquant NON sélectif (β1+β2) collyre → ↓ production humeur aqueuse par corps ciliaire → ↓ PIO. Passage systémique possible (drainage naso-lacrymal)!",ind:"Glaucome à angle ouvert, hypertension oculaire"},
+  {nom:"Xalatan",dci:"Latanoprost",cat:"Ophtalmologie",moa:"Analogue prostaglandine F2α → ↑ drainage uvéoscléral humeur aqueuse → ↓ PIO. PAS CI asthme (≠ Timoptic). Glaucome ANGLE OUVERT uniquement",ind:"Glaucome à angle ouvert, hypertension oculaire (pas glaucome angle fermé!)"},
+  {nom:"Opticrom Allergo",dci:"Acide cromoglicique",cat:"Ophtalmologie",moa:"Stabilisateur mastocytes → ↓ libération médiateurs allergiques (histamine, leucotriènes) → prévention réaction allergique",ind:"Conjonctivite allergique (traitement préventif de fond)"},
+  // ── MÉTABOLISME ──
+  {nom:"Eltroxin-LF",dci:"Lévothyroxine",cat:"Métabolisme",moa:"T4 inactive → convertie en T3 active par désiodase. Prendre À JEUN 30 min avant repas. Espacer 4h : calcium, fer, antiacides",ind:"Hypothyroïdie (traitement substitutif à vie), thyroïdectomie, goitre"},
+  {nom:"Neo-Mercazole",dci:"Carbimazole",cat:"Métabolisme",moa:"Prodrogue → hydrolysée en thiamazole actif → inhibe thyroperoxydase → ↓ synthèse hormones thyroïdiennes (T3 et T4)",ind:"Hyperthyroïdie (maladie de Basedow, adénome toxique, goitre multinodulaire)"},
+  {nom:"Spiricort",dci:"Prednisolone",cat:"Métabolisme",moa:"Glucocorticoïde systémique — inhibe NF-κB et phospholipase A2 → ↓ cytokines, PG, leucotriènes → immunosuppression et anti-inflammation puissants",ind:"Maladies auto-immunes, inflammatoires, immunosuppression post-greffe, choc allergique"},
+  {nom:"Calcimagon D3",dci:"Calcium + Vitamine D3",cat:"Métabolisme",moa:"Ca2+ = minéralisation osseuse. Vit D3 → active VDR → ↑ absorption intestinale Ca2+ + ↑ réabsorption rénale Ca2+",ind:"Prévention et traitement ostéoporose, supplémentation sous corticoïdes chroniques, rachitisme"},
+  {nom:"Fosamax/Fosavance",dci:"Alendronate / Alendronate+VitD3",cat:"Métabolisme",moa:"Bisphosphonate — inhibe farnésyl pyrophosphate synthase → apoptose ostéoclastes → ↓ résorption osseuse. Biodisponibilité ~1% → règles de prise strictes (à jeun + eau + rester debout 30 min)",ind:"Ostéoporose post-ménopausique et cortisonique, prévention fractures"},
+  {nom:"Prolia",dci:"Dénosumab",cat:"Métabolisme",moa:"Anticorps monoclonal anti-RANK-L → inhibe activation ostéoclastes → ↓ résorption osseuse → ↑ densité osseuse",ind:"Ostéoporose sévère à haut risque fracturaire, prévention complications osseuses (métastases)"},
+  {nom:"Colctab",dci:"Colchicine",cat:"Métabolisme",moa:"Inhibe polymérisation tubuline → ↓ migration neutrophiles vers articulation → ↓ inflammation goutteuse. Substrat CYP3A4 + P-gp. Diarrhée = 1er signe toxicité!",ind:"Crise de goutte aiguë, prévention rechutes goutte, fièvre méditerranéenne familiale"},
+  {nom:"Zyloric",dci:"Allopurinol",cat:"Métabolisme",moa:"Inhibe xanthine oxydase → ↓ conversion hypoxanthine/xanthine → acide urique → ↓ production acide urique. Commencer APRÈS la crise!",ind:"Prévention hyperuricémie chronique (goutte chronique, lithiase urique, chimio)"},
+  {nom:"Glucophage",dci:"Metformine",cat:"Métabolisme",moa:"Inhibe complexe I mitochondrial → ↑ AMP/ATP → active AMPK → ↓ néoglucogenèse hépatique. Transporteurs OCT1/OCT2. Pas d'hypoglycémie en monothérapie",ind:"Diabète type 2 — 1ère ligne. Aussi obésité (off-label), prédiabète"},
+  {nom:"Januvia",dci:"Sitagliptine",cat:"Métabolisme",moa:"Inhibiteur DPP-4 → inhibe dégradation GLP-1/GIP → ↑ insuline glucose-dépendante + ↓ glucagon → ↓ glycémie sans hypoglycémie en monothérapie",ind:"Diabète type 2 (mono ou association) — pas d'hypoglycémie en monothérapie"},
+  {nom:"Jardiance",dci:"Empagliflozine",cat:"Métabolisme",moa:"Inhibiteur SGLT2 rénal → ↓ réabsorption glucose → glycosurie → ↓ glycémie + perte poids + ↓ PA. Cardioprotecteur et néphroprotecteur (indépendamment de l'effet glycémique)",ind:"Diabète type 2, insuffisance cardiaque (cardioprotection!), maladie rénale chronique"},
+  {nom:"Lantus",dci:"Insuline glargine",cat:"Métabolisme",moa:"Insuline basale analogue lente (24h, pas de pic) → lie récepteurs insuline → ↑ captation glucose + ↓ néoglucogenèse. Administration SC 1×/jour",ind:"Diabète type 1 et type 2 — insuline basale (couvrir besoins de fond)"},
+  {nom:"NovoRapid",dci:"Insuline asparte",cat:"Métabolisme",moa:"Insuline rapide analogue (début action 10-20 min, pic 1-3h) → lie récepteurs insuline → ↑ captation glucose cellulaire. Administration SC avant repas",ind:"Diabète type 1 et type 2 — insuline prandiale (couvrir besoins aux repas)"},
+  {nom:"Ozempic",dci:"Sémaglutide",cat:"Métabolisme",moa:"Agoniste GLP-1 → ↑ insuline glucose-dépendante + ↓ glucagon + ↓ appétit + ↓ vidange gastrique → ↓ glycémie + perte de poids significative",ind:"Diabète type 2, obésité (Ozempic/Wegovy)"},
+  {nom:"Sortis",dci:"Atorvastatine",cat:"Métabolisme",moa:"Inhibe HMG-CoA réductase → ↓ synthèse cholestérol hépatique → ↑ expression récepteurs LDL → ↓ LDL sanguin. Substrat CYP3A4",ind:"Hypercholestérolémie, prévention cardiovasculaire primaire et secondaire"},
+  {nom:"Crestor",dci:"Rosuvastatine",cat:"Métabolisme",moa:"Inhibe HMG-CoA réductase (plus puissante que atorvastatine) — PEU métabolisée CYP (avantage : moins d'interactions)",ind:"Hypercholestérolémie, prévention cardiovasculaire — moins d'interactions CYP"},
+  {nom:"Ezetrol",dci:"Ézétimibe",cat:"Métabolisme",moa:"Inhibe transporteur NPC1L1 dans entérocytes → ↓ absorption intestinale cholestérol alimentaire et biliaire → ↓ cholestérol sanguin",ind:"Hypercholestérolémie (souvent en association avec statine si objectif LDL non atteint)"},
+  // ── CARDIOLOGIE ──
+  {nom:"Beloc ZOK",dci:"Métoprolol",cat:"Cardiologie",moa:"Bêtabloquant β1 cardiosélectif (moins que bisoprolol) → ↓ FC + ↓ contractilité + ↓ PA. Substrat CYP2D6. Traverse BHE → effets centraux (migraine)",ind:"HTA, angor, IC chronique, arythmies (FA), post-IDM, prévention migraine, tremblements"},
+  {nom:"Concor",dci:"Bisoprolol",cat:"Cardiologie",moa:"Bêtabloquant β1 cardiosélectif le plus sélectif disponible → ↓ FC + ↓ contractilité + ↓ conduction AV + ↓ PA. Gold standard IC chronique stable (CIBIS II)",ind:"HTA (+ comorbidité), angor stable (INDICATION!), IC chronique stable (1ère ligne)"},
+  {nom:"Inderal",dci:"Propranolol",cat:"Cardiologie",moa:"Bêtabloquant NON sélectif (β1+β2) — bloque récepteurs bronchiques (bronchospasme!) et métaboliques. Traverse BHE (lipophile) → effets centraux",ind:"HTA, arythmies, angor, prévention migraine, tremblements essentiels, anxiété de performance, hyperthyroïdie"},
+  {nom:"Zestril/Zestoretic",dci:"Lisinopril / Lisinopril+HCT",cat:"Cardiologie",moa:"IEC — inhibe enzyme de conversion → ↓ angiotensine II + ↑ bradykinine (toux!) → vasodilatation + ↓ aldostérone → ↓ PA + ↓ précharge + ↓ postcharge",ind:"HTA, IC (↓ mortalité), post-infarctus, néphropathie diabétique"},
+  {nom:"Dilzem",dci:"Diltiazem",cat:"Cardiologie",moa:"Anticalcique benzothiazépine (non-DHP) — bloque canaux Ca2+ type L cardiaque ET vasculaire → ↓ FC + ↓ conduction AV + vasodilatation. Inhibe CYP3A4. ATTENTION avec BB!",ind:"HTA, angor stable (réducteur consommation O2), arythmies supraventriculaires (↓ FC)"},
+  {nom:"Diovan/Co-Diovan",dci:"Valsartan / Valsartan+HCT",cat:"Cardiologie",moa:"ARA II (sartan) — antagoniste sélectif récepteur AT1 → ↓ effets angiotensine II sans ↑ bradykinine (pas de toux!) → vasodilatation + ↓ aldostérone",ind:"HTA, IC post-infarctus (si IEC non toléré), néphropathie diabétique"},
+  {nom:"Aldactone",dci:"Spironolactone",cat:"Cardiologie",moa:"Antagoniste aldostérone → diurétique épargneur K+ + structure stéroïdienne → antagoniste récepteurs androgènes (gynécomastie homme, ↓ hirsutisme femme)",ind:"IC (réduction mortalité), HTA résistante, hyperaldostéronisme, syndrome néphrotique"},
+  {nom:"Esidrex",dci:"Hydrochlorothiazide",cat:"Cardiologie",moa:"Diurétique thiazidique — bloque cotransporteur Na+/Cl- tube distal → ↓ réabsorption Na+ + GARDE le Ca2+ (≠ Lasix). HypoK+ indirecte par ↑ échange Na+/K+",ind:"HTA, oedèmes cardiaques légers, lithiase urique (↑ Ca urinaire paradoxal)"},
+  {nom:"Lasix",dci:"Furosémide",cat:"Cardiologie",moa:"Diurétique de l'anse — inhibe cotransporteur Na+/K+/2Cl- anse de Henlé (site PRINCIPAL) → ↓ réabsorption Na+ + PERD le Ca2+. Action indépendante de l'aldostérone",ind:"Oedèmes (IC, syndrome néphrotique), HTA réfractaire, hypercalcémie aiguë"},
+  {nom:"Cordarone",dci:"Amiodarone",cat:"Cardiologie",moa:"Antiarythmique classe III — bloque canaux K+ cardiaque → ↑ durée potentiel action → allonge QT. Contient 37% d'iode. T1/2 40-55 jours. NEUTRE sur kaliémie (mais diarrhée → hypoK+ → torsades!)",ind:"Tachyarythmies ventriculaires et supraventriculaires sévères (FA, flutter, TV, FV)"},
+  {nom:"Effortil",dci:"Étiléfrine",cat:"Cardiologie",moa:"Sympathomimétique α et β → vasoconstriction (α) + inotrope positif (β) → ↑ PA systolique et diastolique",ind:"Hypotension orthostatique, hypotension symptomatique"},
+  {nom:"Nitroderm TTS",dci:"Nitroglycérine",cat:"Cardiologie",moa:"Libère NO → active guanylate cyclase → ↑ GMPc → vasodilatation veineuse prédominante → ↓ précharge + vasodilatation coronaire → ↓ ischémie. CI absolue iPDE5!",ind:"Angor (prophylaxie et traitement), IC (↓ précharge), HTA urgence"},
+  // ── GYNÉCOLOGIE ──
+  {nom:"Cerazette",dci:"Désogestrel",cat:"Gynécologie",moa:"Progestatif seul (mini-pilule) — inhibe ovulation principalement + ↑ viscosité glaire cervicale. Substrat CYP3A4. PAS d'oestrogène → utilisable allaitement",ind:"Contraception (y compris pendant allaitement, si contre-indication aux oestrogènes)"},
+  {nom:"Evra",dci:"Norelgestromine + Éthinylestradiol",cat:"Gynécologie",moa:"Contraceptif hormonal combiné (CHC) transdermique — inhibe gonadotrophines (FSH/LH) → blocage ovulation + ↑ viscosité glaire. Patch hebdomadaire 3 semaines / 1 semaine sans",ind:"Contraception hormonale combinée (patch 1×/semaine pendant 3 semaines + 1 semaine sans patch)"},
+  {nom:"Flagyl",dci:"Métronidazole",cat:"Gynécologie",moa:"Nitro-imidazole — réduit en radical nitro toxique par ferredoxine anaérobie → lèse ADN bactérien/parasitaire → bactéricide/antiparasitaire. Actif sur anaérobies et protozoaires UNIQUEMENT",ind:"Vaginites à Gardnerella/Trichomonas (gynéco), amibiase, lambliase, infections à anaérobies"},
+  {nom:"Gyno Canesten",dci:"Clotrimazole gynécologique",cat:"Gynécologie",moa:"Imidazolé antifongique — inhibe CYP51 de Candida → ↓ synthèse ergostérol membranaire → altération membrane → mort fongique. OTC (sans ordonnance)!",ind:"Vaginite à Candida (candidose vaginale), leucorrhée infectieuse à champignons"},
+  // ── INFECTIOLOGIE ──
+  {nom:"Co-Amoxi Mepha",dci:"Amoxicilline + Acide clavulanique",cat:"Infectiologie",moa:"Amoxicilline = bêta-lactamine → inhibe transpeptidases → ↓ synthèse paroi bactérienne → bactéricide. Acide clavulanique = inhibiteur bêta-lactamases → protège amoxicilline des résistances",ind:"Infections ORL, IVRS, IU, cutanées, IST (gonorrhée), gynécologiques à G+ et G-"},
+  {nom:"Zinat",dci:"Céfuroxime",cat:"Infectiologie",moa:"Prodrogue (céfuroxime axétil) → hydrolysée par estérases intestinales → céfuroxime actif. Céphalosporine 2G bactéricide → inhibe transpeptidases → ↓ synthèse paroi",ind:"ORL, IVRS, IU, maladie de Lyme, gonorrhée — spectre G+ et G- élargi"},
+  {nom:"Klacid",dci:"Clarithromycine",cat:"Infectiologie",moa:"Macrolide — se lie SU 50S ribosomaux → inhibe translocation acides aminés → ↓ synthèse protéique. Bactéricide ou bactériostatique. INHIBITEUR PUISSANT CYP3A4 + P-gp. Allonge QT",ind:"IVRI atypiques (Legionella, Mycoplasma), pharyngite, sinusite, peau, H.pylori, mycobactéries VIH"},
+  {nom:"Ciproxin",dci:"Ciprofloxacine",cat:"Infectiologie",moa:"Fluoroquinolone bactéricide — inhibe ADN gyrase (topo II) + topo-isomérase IV → bloque réplication ADN. Inhibiteur modéré CYP1A2. Allonge QT. CI absolue avec Sirdalud!",ind:"IVRI G-, ORL G-, IU, turista, maladie du charbon, infections à P.aeruginosa (mucoviscidose)"},
+  {nom:"Bactrim",dci:"Sulfaméthoxazole + Triméthoprime",cat:"Infectiologie",moa:"Synergie bactéricide — SMX bloque dihydroptéroate synthase + TMP bloque DHFR → double blocage biosynthèse acide folinique bactérien → ↓ purines → mort bactérienne",ind:"ORL, IU (cystite), turista, P.jirovecii (pneumocystose), toxoplasmose"},
+  {nom:"Zovirax",dci:"Aciclovir",cat:"Infectiologie",moa:"Analogue nucléosidique — phosphorylé SÉLECTIVEMENT par thymidine kinase virale → incorporation ADN viral → terminaison chaîne → arrêt réplication (virostatique, PAS virucide)",ind:"Herpès simplex (HSV 1+2) : génital, labial, kératite. Zona (VZV) — dès 72h du début"},
+  {nom:"Malarone",dci:"Atovaquone + Proguanil",cat:"Infectiologie",moa:"Atovaquone = inhibe chaîne transport électrons mitochondrial parasitaire. Proguanil → cycloguanil → inhibe DHFR parasitaire. Synergie des deux mécanismes. PAS d'hallucinations (≠ méfloquine!)",ind:"Prévention (dès 10 kg) ET traitement (dès 5 kg) paludisme à P.falciparum"},
+  {nom:"Monuril",dci:"Fosfomycine trométamol",cat:"Infectiologie",moa:"Inhibe énolpyruvyl-transférase (MurA) → bloque 1ère étape synthèse peptidoglycane → ↓ paroi bactérienne. DOSE UNIQUE (3g). EI caractéristique: vulvovaginite",ind:"Infections urinaires non compliquées aiguës (>12 ans) — dose unique!"},
+  // ── UROLOGIE ──
+  {nom:"Pradif",dci:"Tamsulosine",cat:"Urologie",moa:"Alpha-1 bloquant sélectif (α1A + α1D) → relaxation muscles lisses prostate, urètre, col vésical → ↑ débit urinaire. IFIS (iris flaccide) si chirurgie cataracte!",ind:"Hyperplasie bénigne de la prostate (HBP) — troubles fonctionnels urinaires"},
+  {nom:"Viagra",dci:"Sildénafil",cat:"Urologie",moa:"Inhibiteur PDE5 → ↑ GMPc dans corps caverneux → vasodilatation → érection. N'agit QU'EN PRÉSENCE de stimulation sexuelle. CI absolue avec dérivés nitrés!",ind:"Dysfonction érectile. HTA = PAS une CI! Agit seulement avec stimulation sexuelle"},
+  {nom:"Betmiga",dci:"Mirabégron",cat:"Urologie",moa:"Agoniste β3-adrénergique → relaxation détrusor pendant remplissage vésical → ↑ capacité vésicale → ↓ urgences mictionnelles. Inhibe modérément CYP2D6",ind:"Hyperactivité vésicale : urgenturie, pollakiurie, incontinence par urgence"},
+  {nom:"Emselex",dci:"Darifénacine",cat:"Urologie",moa:"Anticholinergique sélectif M3 vésical → ↓ contractions involontaires détrusor → ↑ capacité vésicale → ↓ incontinence",ind:"Hyperactivité vésicale avec incontinence, urgenturie, pollakiurie"},
+  // ── SANG ──
+  {nom:"Sintrom",dci:"Acénocoumarol",cat:"Sang",moa:"AVK — inhibe vitamine K époxyde réductase → ↓ recyclage vit K → ↓ facteurs II, VII, IX, X. Surveillance INR obligatoire. Nombreuses interactions CYP2C9",ind:"Prévention/traitement thrombo-emboliques : FA, TVP, EP, valves cardiaques prothétiques"},
+  {nom:"Xarelto",dci:"Rivaroxaban",cat:"Sang",moa:"AOD — inhibiteur direct facteur Xa → ↓ conversion prothrombine en thrombine. PAS de monitoring INR. Antidote: Andexanet alfa. Carte patient obligatoire!",ind:"TVP, EP, prophylaxie AVC (FA), thromboprophylaxie orthopédique"},
+  {nom:"Aspirin cardio",dci:"Acide acétylsalicylique (faible dose)",cat:"Sang",moa:"Inhibe COX-1 irréversiblement → ↓ TXA2 plaquettaire → ↓ agrégation plaquettaire (effet antiplaquettaire à doses 75-300 mg). Plaquettes sans noyau → inhibition définitive",ind:"Prévention secondaire SCA, AVC ischémique, angioplastie coronaire, pose de stent"},
+  {nom:"Clexane",dci:"Énoxaparine",cat:"Sang",moa:"HBPM — forte activité anti-Xa + faible activité anti-IIa → ↓ coagulation sans monitoring INR. Injection SC. Antidote: protamine (neutralisation partielle)",ind:"TVP, EP, angor instable, IDM, prévention TEV chirurgicale, hémodialyse"},
+  {nom:"Plavix",dci:"Clopidogrel",cat:"Sang",moa:"Prodrogue activée par CYP2C19 → métabolite actif → inhibe irréversiblement récepteur P2Y12 (ADP plaquettaire) → ↓ agrégation plaquettaire. Préférer pantoprazole (vs oméprazole qui ↓ CYP2C19)",ind:"Prévention secondaire SCA, AVC ischémique, FA (avec AAS), stent coronarien"},
+  {nom:"Imurek",dci:"Azathioprine",cat:"Sang",moa:"Immunosuppresseur — prodrogue → 6-MP (6-mercaptopurine) via thiopurine méthyltransférase (TPMT) → ↓ synthèse purines → ↓ prolifération lymphocytaire. Allopurinol ↑ toxicité ×4!",ind:"Prévention rejet greffe, polyarthrite rhumatoïde sévère, lupus, hépatite chronique auto-immune"},
+  {nom:"Gyno Tardyferon",dci:"Sulfate ferreux + Acide folique",cat:"Sang",moa:"Fe2+ → absorption duodénale → transporté par transferrine → incorporé hémoglobine. Acide folique → cofacteur synthèse ADN. Libération retardée → ↓ EI GI",ind:"Anémie ferriprive, carence en acide folique, supplémentation pendant grossesse et post-partum"},
+  // ── ONCOLOGIE ──
+  {nom:"Glivec",dci:"Imatinib",cat:"Oncologie",moa:"Inhibiteur BCR-ABL tyrosine kinase → bloque phosphorylation → ↓ prolifération cellules leucémiques Ph+. Inhibe aussi CYP3A4, 2D6, 2C9, 2C19",ind:"LMC Ph+ (leucémie myéloïde chronique chromosome Philadelphie), GIST, autres néoplasies BCR-ABL+"}
+];
+
+// ═══════════════════════════════════════════════
+// QUESTION TYPES
+// ═══════════════════════════════════════════════
+const QTYPES = [
+  {
+    id:'nom_moa', label:"Mécanisme d'action",
+    q: m => `Quel est le mécanisme d'action de <strong>${esc(m.nom)}</strong>&nbsp;?`,
+    ans: m => m.moa
+  },
+  {
+    id:'moa_nom', label:"Identification par MOA",
+    q: m => {
+      const preview = m.moa.length > 80 ? m.moa.substring(0,80)+'…' : m.moa;
+      return `Quel médicament correspond à ce mécanisme d'action&nbsp;?<br><em>"${esc(preview)}"</em>`;
+    },
+    ans: m => m.nom
+  },
+  {
+    id:'nom_ind', label:"Indications",
+    q: m => `Quelles sont les indications de <strong>${esc(m.nom)}</strong> (${esc(m.dci)})&nbsp;?`,
+    ans: m => m.ind
+  },
+  {
+    id:'ind_nom', label:"Identification par indication",
+    q: m => {
+      const preview = m.ind.length > 80 ? m.ind.substring(0,80)+'…' : m.ind;
+      return `Quel médicament est indiqué pour&nbsp;:<br><em>"${esc(preview)}"</em>`;
+    },
+    ans: m => m.nom
+  }
+];
+
+// ═══════════════════════════════════════════════
+// UTILS
+// ═══════════════════════════════════════════════
+function esc(s){
+  if(!s) return '';
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function shortenAnswer(text, qiIdx){
+  const qt = QTYPES[qiIdx];
+  if(qt.id!=='nom_moa' && qt.id!=='nom_ind') return text;
+  let s = text;
+  if(qt.id==='nom_moa'){
+    s = s.replace(/\s*\([^)]*\)/g,'');
+    const parts = s.split(' → ');
+    s = parts.slice(0, Math.min(2, parts.length)).join(' → ');
+    const dash = s.indexOf(' — ');
+    if(dash>0) s = s.substring(0,dash);
+  } else {
+    const colon = s.indexOf(' :');
+    if(colon>5) s = s.substring(0,colon);
+    else {
+      const comma = s.indexOf(',');
+      if(comma>15) s = s.substring(0,comma);
+    }
+  }
+  s = s.trim();
+  if(s.length>72) s = s.substring(0,69)+'…';
+  return s;
+}
+
+const selectedTypeIds = new Set(['nom_moa','moa_nom','nom_ind','ind_nom']);
+
+function toggleType(id){
+  if(selectedTypeIds.has(id) && selectedTypeIds.size===1) return;
+  if(selectedTypeIds.has(id)) selectedTypeIds.delete(id);
+  else selectedTypeIds.add(id);
+  document.getElementById('bt-'+id).classList.toggle('selected', selectedTypeIds.has(id));
+}
+
+function randomActiveQi(){
+  const active = QTYPES.map((_,i)=>i).filter(i=>selectedTypeIds.has(QTYPES[i].id));
+  return active[Math.floor(Math.random()*active.length)];
+}
+
+let _seed = Math.random() * 1000;
+
+function fisherYates(arr){
+  const a=[...arr];
+  for(let i=a.length-1;i>0;i--){
+    const j=Math.floor(Math.random()*(i+1));
+    [a[i],a[j]]=[a[j],a[i]];
+  }
+  return a;
+}
+
+function getCorrectPosition(questionIndex){
+  return Math.min(
+    Math.floor((Math.sin(questionIndex*7.3+_seed)*0.5+0.5)*4),
+    3
+  );
+}
+
+function pickDistractors(correctAnswer, correctMed, qt, count){
+  const sameCat  = MEDICATIONS.filter(m => m.cat===correctMed.cat && m!==correctMed);
+  const otherCat = MEDICATIONS.filter(m => m.cat!==correctMed.cat);
+  const useSame  = Math.random()<0.7;
+  const pool = [...fisherYates(useSame?sameCat:otherCat), ...fisherYates(useSame?otherCat:sameCat)];
+  const distractors = [];
+  for(const med of pool){
+    if(distractors.length>=count) break;
+    const val = qt.ans(med);
+    if(val && val!==correctAnswer && !distractors.includes(val)) distractors.push(val);
+  }
+  while(distractors.length<count) distractors.push("— Option non disponible —");
+  return distractors;
+}
+
+// ═══════════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════════
+let mainQ=[], retryQ=[], curQ=null, curOpts=[], curPos=-1;
+let score=0, mastered=new Set(), dispIdx=0, totalAsked=0, totalWrong=0;
+
+// ═══════════════════════════════════════════════
+// UI
+// ═══════════════════════════════════════════════
+function showScreen(id){
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+
+function confirmQuit(){
+  if(confirm('Quitter le quiz en cours ?')) showScreen('home');
+}
+
+function startQuiz(){
+  _seed = Math.random()*1000;
+  score=0; mastered=new Set(); dispIdx=0; totalAsked=0; totalWrong=0; retryQ=[];
+  const sel = fisherYates([...MEDICATIONS]).slice(0,100);
+  mainQ = sel.map(m=>({med:m, qi:randomActiveQi(), retry:false}));
+  showScreen('quiz');
+  nextQuestion();
+}
+
+function nextQuestion(){
+  if(mastered.size>=100){ showSummary(); return; }
+  if(mainQ.length===0){
+    if(retryQ.length===0){ showSummary(); return; }
+    mainQ = fisherYates([...retryQ]);
+    retryQ = [];
+  }
+  curQ = mainQ.shift();
+  dispIdx++; totalAsked++;
+
+  const qt = QTYPES[curQ.qi];
+  const correct = qt.ans(curQ.med);
+  const pos = getCorrectPosition(dispIdx);
+  const dist = pickDistractors(correct, curQ.med, qt, 3);
+
+  const opts=[]; let di=0;
+  for(let i=0;i<4;i++) opts.push(i===pos ? correct : dist[di++]);
+
+  curOpts=opts; curPos=pos;
+  render();
+  updateStats();
+  document.getElementById('fb-area').style.display='none';
+}
+
+function render(){
+  const qt = QTYPES[curQ.qi];
+  document.getElementById('b-qtype').textContent = qt.label;
+  document.getElementById('b-retry').style.display = curQ.retry ? 'inline-block' : 'none';
+  document.getElementById('b-cat').textContent = curQ.med.cat;
+
+  // re-trigger question card animation
+  const qbox = document.getElementById('qbox');
+  qbox.style.animation = 'none';
+  qbox.offsetHeight;
+  qbox.style.animation = '';
+  qbox.innerHTML = qt.q(curQ.med);
+
+  const el = document.getElementById('opts');
+  el.innerHTML = '';
+  curOpts.forEach((o,i)=>{
+    const b = document.createElement('button');
+    b.className = 'opt-btn';
+    b.innerHTML = `<span class="opt-letter">${'ABCD'[i]}.</span><span class="opt-text">${esc(shortenAnswer(o, curQ.qi))}</span>`;
+    b.onclick = ()=>answer(i);
+    el.appendChild(b);
+  });
+}
+
+function answer(idx){
+  const ok = idx===curPos;
+
+  document.querySelectorAll('.opt-btn').forEach((b,i)=>{
+    b.disabled=true;
+    if(i===curPos) b.classList.add(ok?'correct':'reveal');
+    else if(i===idx && !ok) b.classList.add('wrong');
+  });
+
+  if(ok){
+    score += curQ.retry ? 1 : 2;
+    mastered.add(curQ.med.nom);
+  } else {
+    totalWrong++;
+    retryQ.push({med:curQ.med, qi:randomActiveQi(), retry:true});
+  }
+
+  const banner = document.getElementById('fb-banner');
+  if(ok){
+    banner.className='fb-banner fb-ok';
+    banner.textContent = curQ.retry ? '✓ Correct ! (+1 pt — révision)' : '✓ Correct ! (+2 pts)';
+  } else {
+    banner.className='fb-banner fb-err';
+    banner.textContent = '✗ Incorrect — cette question sera reposée';
+  }
+
+  const m = curQ.med;
+  document.getElementById('fiche').innerHTML =
+    `<div class="fiche-nom">📖 ${esc(m.nom)} — ${esc(m.dci)}</div>`+
+    `<div class="fiche-row"><span class="fiche-key">🔬 MOA :</span> ${esc(m.moa)}</div>`+
+    `<div class="fiche-row"><span class="fiche-key">💊 Indications :</span> ${esc(m.ind)}</div>`;
+
+  const done = mastered.size>=100 || (mainQ.length===0 && retryQ.length===0);
+  document.getElementById('btn-next').textContent = done ? 'Voir les résultats →' : 'Question suivante →';
+  document.getElementById('fb-area').style.display='block';
+  updateStats();
+}
+
+function updateStats(){
+  document.getElementById('pbar').style.width = mastered.size+'%';
+  document.getElementById('s-score').textContent = `Score : ${score} pts`;
+  document.getElementById('s-mastered').textContent = `Maîtrisés : ${mastered.size} / 100`;
+  document.getElementById('s-queue').textContent = `En attente : ${mainQ.length+retryQ.length}`;
+}
+
+function showSummary(){
+  const pct = Math.round(score/200*100);
+  document.getElementById('fscore').textContent = `${score} / 200 pts`;
+  document.getElementById('fnote').textContent = `${pct}% de réussite — ${mastered.size}/100 médicaments maîtrisés`;
+  document.getElementById('fgrid').innerHTML =
+    `<div class="sum-card"><div class="sum-val">${totalAsked}</div><div class="sum-lbl">Questions posées</div></div>`+
+    `<div class="sum-card"><div class="sum-val">${totalAsked-totalWrong}</div><div class="sum-lbl">Bonnes réponses</div></div>`+
+    `<div class="sum-card"><div class="sum-val">${totalWrong}</div><div class="sum-lbl">Erreurs totales</div></div>`+
+    `<div class="sum-card"><div class="sum-val">${pct}%</div><div class="sum-lbl">Score final</div></div>`;
+  showScreen('summary');
+}
+
+// Keyboard: A/B/C/D or 1/2/3/4 to pick, Enter/Space to advance
+document.addEventListener('keydown', e=>{
+  if(!document.getElementById('quiz').classList.contains('active')) return;
+  const map={'a':0,'b':1,'c':2,'d':3,'1':0,'2':1,'3':2,'4':3};
+  const k = e.key.toLowerCase();
+  const fbVisible = document.getElementById('fb-area').style.display!=='none';
+  if(!fbVisible && k in map){
+    answer(map[k]);
+  } else if(fbVisible && (k==='enter'||k===' ')){
+    e.preventDefault();
+    nextQuestion();
+  }
+});
+</script>
+</body>
+</html>
